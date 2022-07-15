@@ -81,14 +81,16 @@ client.on("room.message", (roomId, event) => {
     //link_matches = body.match(/https?:\/\/[^\ ]*youtu[^\ ]*/g);
     var r = new RegExp(/https?:\/\/[^\ ]*youtube.com\/watch\?v=([^\ ]*)/g);
     link_matches = r.exec(body);
-    console.log(link_matches);
     if (link_matches && link_matches.length > 1) {
-      console.log("Relaying: " + link_matches[0]);
       // pass to server
       var obj = {
-        link:
+        link: link_matches[0],
+        embedLink:
           "https://www.youtube.com/embed/" + link_matches[1] + "?autoplay=1",
+        videoId: link_matches[1],
+    
       };
+      console.log("Relaying: " + obj.link);
       sockets.forEach((s) => s.send(JSON.stringify(obj)));
     }
   }
