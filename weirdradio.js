@@ -82,16 +82,24 @@ client.on("room.message", (roomId, event) => {
     var r = new RegExp(/https?:\/\/[^\ ]*youtube.com\/watch\?v=([^\ ]*)/g);
     link_matches = r.exec(body);
     if (link_matches && link_matches.length > 1) {
-      // pass to server
-      var obj = {
-        link: link_matches[0],
-        embedLink:
-          "https://www.youtube.com/embed/" + link_matches[1] + "?autoplay=1",
-        videoId: link_matches[1],
-    
-      };
-      console.log("Relaying: " + obj.link);
-      sockets.forEach((s) => s.send(JSON.stringify(obj)));
+      // get title
+      request(link_matches[0], function (err, _res, body) {
+        if (err) return console.error(err);
+        title = "unset";
+        let $ = cheerio.load(body);
+        tmpTitle = $("title").text();
+        if (tmpTitle != "") {
+          title = tmpTitle.replace(" - YouTube", "");
+        }
+        // pass to server
+        var obj = {
+          link: link_matches[0],
+          videoId: link_matches[1],
+          title: title,
+        };
+        console.log("Relaying: " + obj.link);
+        sockets.forEach((s) => s.send(JSON.stringify(obj)));
+      });
     }
   }
 });

@@ -2,8 +2,49 @@
     <head>
         <script type='text/javascript' src='http://www.youtube.com/player_api'></script>
         <title>Weirdradio</title></head>
+        <style>
+            div.body {
+                width: 1024px;
+                height: 768px;
+                border: solid 1px;
+                padding: 1pc;
+            }
+            div.leftcolumn {
+                width: 30%;
+                float: left;
+            }
+            div.title {
+                height: 20%;
+            }
+            div.playlist {
+                height: 80%;
+            }
+            div.rightcolumn {
+                width: 60%;
+                float: left;
+            }
+            #playerframe {
+                height: 100%;
+                width: 100%;
+                background-color: purple;
+            }
+        </style>
     <body onload="connectSocket()">
-        <div id="player"></div>
+        <div class="body">
+        <div class="leftcolumn">
+            <div class="title">
+                <h1>Weirdradio</h1>
+            </div>
+            <div class="playlist">
+                {playlist}
+            </div>
+        </div>
+        <div class="rightcolumn">
+            <div class="playerframe">
+                <div id="player"></div>
+            </div>
+        </div>
+        </div>
     </body>
     <script>
         // 2. This code loads the IFrame Player API code asynchronously.
