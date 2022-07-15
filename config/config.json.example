@@ -1,0 +1,18 @@
+{
+  "homeServerUrl": "https://matrix.your-homeserver.org",
+  "accessToken": "youraccesstokencanbeobtainedthroughriot",
+  "storage": "config/bot.json",
+  "webServerPort": "8080",
+  "webSocketServerPort":"8090",
+  "monitorChannels": [
+    "!yoursourceroomeid0:matrix.your-homeserver.org",
+    "!yoursourceroomeid1:matrix.your-homeserver.org",
+    "!yoursourceroomeid2:matrix.your-homeserver.org"
+    ],
+  "relayTypes" : [
+    "m.image",
+    "m.video"
+  ],
+  "extractYoutubeLinks": true,
+  "showYoutubeTitle": true
+}
