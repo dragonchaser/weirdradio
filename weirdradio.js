@@ -78,12 +78,16 @@ client.on("room.message", (roomId, event) => {
   const url = event["content"]["url"];
   if (type == "m.text") {
     // TODO: beautify this regexp, too greedy, match only on explizit watch links, maybe transcribe into embedd links here
-    link_matches = body.match(/https?:\/\/[^\ ]*youtu[^\ ]*/g);
-    if (link_matches && link_matches.length > 0) {
+    //link_matches = body.match(/https?:\/\/[^\ ]*youtu[^\ ]*/g);
+    var r = new RegExp(/https?:\/\/[^\ ]*youtube.com\/watch\?v=([^\ ]*)/g);
+    link_matches = r.exec(body);
+    console.log(link_matches);
+    if (link_matches && link_matches.length > 1) {
       console.log("Relaying: " + link_matches[0]);
       // pass to server
       var obj = {
-        link: link_matches[0],
+        link:
+          "https://www.youtube.com/embed/" + link_matches[1] + "?autoplay=1",
       };
       sockets.forEach((s) => s.send(JSON.stringify(obj)));
     }
