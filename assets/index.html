@@ -1,122 +1,128 @@
 <html>
-    <head>
-        <script type='text/javascript' src='http://www.youtube.com/player_api'></script>
-        <title>Weirdradio</title></head>
-        <style>
-            div.body {
-                width: 1024px;
-                height: 768px;
-                border: solid 1px;
-                padding: 1pc;
-            }
-            div.leftcolumn {
-                width: 30%;
-                float: left;
-            }
-            div.title {
-                height: 20%;
-            }
-            div.playlist {
-                height: 80%;
-            }
-            div.rightcolumn {
-                width: 60%;
-                float: left;
-            }
-            #playerframe {
-                height: 100%;
-                width: 100%;
-                background-color: purple;
-            }
-        </style>
-    <body onload="connectSocket()">
-        <div class="body">
-        <div class="leftcolumn">
-            <div class="title">
-                <h1>Weirdradio</h1>
-            </div>
-            <div id="playlist" class="playlist">
-                {playlist}
-            </div>
+  <head>
+    <script
+      type="text/javascript"
+      src="http://www.youtube.com/player_api"
+    ></script>
+    <title>Weirdradio</title>
+  </head>
+  <style>
+    div.body {
+      width: 1024px;
+      height: 768px;
+      border: solid 1px;
+      padding: 1pc;
+    }
+    div.leftcolumn {
+      width: 30%;
+      float: left;
+    }
+    div.title {
+      height: 20%;
+    }
+    div.playlist {
+      height: 80%;
+    }
+    div.rightcolumn {
+      width: 60%;
+      float: left;
+    }
+    #playerframe {
+      height: 100%;
+      width: 100%;
+      background-color: purple;
+    }
+  </style>
+  <body onload="connectSocket()">
+    <div class="body">
+      <div class="leftcolumn">
+        <div class="title">
+          <h1>Weirdradio</h1>
         </div>
-        <div class="rightcolumn">
-            <div class="playerframe">
-                <div id="player"></div>
-            </div>
+        <div id="playlist" class="playlist">{playlist}</div>
+      </div>
+      <div class="rightcolumn">
+        <div class="playerframe">
+          <div id="player"></div>
         </div>
-        </div>
-    </body>
-    <script>
-        var playlist = []
-        var tag = document.createElement('script');
-  
-        tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-  
-        // 3. This function creates an <iframe> (and YouTube player)
-        //    after the API code downloads.
-        var player;
-        function onYouTubeIframeAPIReady() {
-          player = new YT.Player('player', {
-            height: '390',
-            width: '640',
-            videoId: 'Wch3gJG2GJ4',
-            playerVars: {
-              'playsinline': 1
-            },
-            events: {
-              'onReady': onPlayerReady,
-              'onStateChange': onPlayerStateChange
-            }
-          });
-        }
-  
-        function onPlayerReady(event) {
-          event.target.playVideo();
-        }
+      </div>
+    </div>
+  </body>
+  <script>
+    var playlist = [];
+    var tag = document.createElement("script");
 
-        var done = false;
-        function onPlayerStateChange(event) {
-          if (event.data == 0) {
-            console.log("playing stopped")
-          }
-          //if (event.data == YT.PlayerState.PLAYING && !done) {
-          //  setTimeout(stopVideo, 6000);
-          //  done = true;
-          //}
-        }
-        function stopVideo() {
-          player.stopVideo();
-        }
-            
-        function connectSocket() {
-            baseUrl = (window.location.host).replace("8080", "8090")
-            let socket = new WebSocket("ws://"+baseUrl);
-            socket.onopen = function(e) {
-                console.log("[open] Connection established");
-            };
-            socket.onmessage = function(event) {
-                data = JSON.parse(event.data)
-                if (data["videoId"] != undefined && data["videoId"] != null) {
-                    playlist.push(data)
-                    updatePlaylist()
-                    player.loadVideoById(data["videoId"])
-                    player.playVideo()
-                    console.log(`[message] Data received from server: ${event.data}`);
-                } else {
-                    console.log(`[unparseable message] Data received from server ${event.data}`)
-                }
-            };
-        }
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName("script")[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-        function updatePlaylist() {
-            pl = document.getElementById("playlist")
-            output = ""
-            playlist.forEach((e) => {
-                output = output + `<div><div>${e.title}</div><div>${e.link}</div></div>`
-            })
-            pl.innerHTML = output
+    // 3. This function creates an <iframe> (and YouTube player)
+    //    after the API code downloads.
+    var player;
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player("player", {
+        height: "390",
+        width: "640",
+        videoId: "Wch3gJG2GJ4",
+        playerVars: {
+          playsinline: 1,
+        },
+        events: {
+          onReady: onPlayerReady,
+          onStateChange: onPlayerStateChange,
+        },
+      });
+    }
+
+    function onPlayerReady(event) {
+      event.target.playVideo();
+    }
+
+    var done = false;
+    function onPlayerStateChange(event) {
+      if (event.data == 0) {
+        console.log("playing stopped");
+      }
+      //if (event.data == YT.PlayerState.PLAYING && !done) {
+      //  setTimeout(stopVideo, 6000);
+      //  done = true;
+      //}
+    }
+    function stopVideo() {
+      player.stopVideo();
+    }
+
+    function connectSocket() {
+      baseUrl = window.location.host.replace("8080", "8090");
+      let socket = new WebSocket("ws://" + baseUrl);
+      socket.onopen = function (e) {
+        console.log("[open] Connection established");
+      };
+      // TODO: on close and on error attempt reconnect
+      socket.onmessage = function (event) {
+        data = JSON.parse(event.data);
+        if (data["videoId"] != undefined && data["videoId"] != null) {
+          playlist.push(data);
+          updatePlaylist();
+          player.loadVideoById(data["videoId"]);
+          player.playVideo();
+          console.log(`[message] Data received from server: ${event.data}`);
+        } else {
+          console.log(
+            `[unparseable message] Data received from server ${event.data}`
+          );
         }
-    </script>
+      };
+    }
+
+    function updatePlaylist() {
+      pl = document.getElementById("playlist");
+      output = "";
+      playlist.forEach((e) => {
+        output =
+          output + `<div><div>${e.title}</div><div>${e.link}</div></div>`;
+      });
+      pl.innerHTML = output;
+    }
+  </script>
 </html>
