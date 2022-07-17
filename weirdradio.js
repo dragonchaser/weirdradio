@@ -21,11 +21,13 @@ const client = new MatrixClient(
 );
 
 // load assets
+console.log("Reading assets...")
 let assets = [];
-var files = fs.readdirSync("assets/");
+var files = fs.readdirSync(config.assetDir);
 files.forEach((name) => {
   assets[name] = fs.readFileSync("assets/" + name);
 });
+console.log("[DONE]")
 // create server, this is for delivering the iframe page
 const webServer = http
   .createServer((req, res) => {

@@ -50,6 +50,8 @@
   </body>
   <script>
     var playlist = [];
+    var socketConnector = null;
+    var socketSemaphore = false;
     var tag = document.createElement("script");
 
     tag.src = "https://www.youtube.com/iframe_api";
@@ -93,12 +95,38 @@
     }
 
     function connectSocket() {
+      if (socketSemaphore) {
+        console.log("Another connection attempt already in progress, canceling!");
+        return;
+      }
+      console.log("Connecting to socket");
+      socketSemaphore = true;
       baseUrl = window.location.host.replace("8080", "8090");
       let socket = new WebSocket("ws://" + baseUrl);
       socket.onopen = function (e) {
+        clearInterval(socketConnector);
+        socketConnector = null;
+        socketSemaphore = false;
         console.log("[open] Connection established");
       };
       // TODO: on close and on error attempt reconnect
+      socket.onclose = function (event) {
+        if (event.wasClean) {
+          console.log(
+            `[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`
+          );
+        } else {
+          // e.g. server process killed or network down
+          // event.code is usually 1006 in this case
+          // TODO: add some nice ui thingi to show reconnect
+          // TODO: also add some timeout function to repeat this until connect is successful, let it interact with 'onopen'
+          console.log("[close] Connection died, attempting reconnect");
+          if (!socketConnector) {
+            socketConnector = setInterval(connectSocket, 5000);
+            socketSemaphore = false;
+          }
+        }
+      };
       socket.onmessage = function (event) {
         data = JSON.parse(event.data);
         if (data["videoId"] != undefined && data["videoId"] != null) {
@@ -113,6 +141,7 @@
           );
         }
       };
+      socketSemaphore = false;
     }
 
     function updatePlaylist() {
@@ -124,5 +153,12 @@
       });
       pl.innerHTML = output;
     }
+
+    //function myDebugger() {
+    //    console.log(socketSemaphore);
+    //    console.log(socketConnector);
+    //    console.log("=================");
+    //}
+    //myDebugger = setInterval(myDebugger, 2000);
   </script>
 </html>

@@ -2,6 +2,7 @@
   "homeServerUrl": "https://matrix.your-homeserver.org",
   "accessToken": "youraccesstokencanbeobtainedthroughriot",
   "storage": "config/bot.json",
+  "assetDir": "assets/",
   "webServerPort": "8080",
   "webSocketServerPort":"8090",
   "monitorChannels": [
