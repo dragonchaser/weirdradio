@@ -39,7 +39,7 @@
         <div class="title">
           <h1>Weirdradio</h1>
         </div>
-        <div id="playlist" class="playlist">{playlist}</div>
+        <div id="playlist" class="playlist"></div>
       </div>
       <div class="rightcolumn">
         <div class="playerframe">
@@ -53,6 +53,8 @@
     var socketConnector = null;
     var socketSemaphore = false;
     var tag = document.createElement("script");
+    var currentVideoID = null;
+    var player = null;
 
     tag.src = "https://www.youtube.com/iframe_api";
     var firstScriptTag = document.getElementsByTagName("script")[0];
@@ -62,10 +64,11 @@
     //    after the API code downloads.
     var player;
     function onYouTubeIframeAPIReady() {
+      currentVideoID = "Wch3gJG2GJ4";
       player = new YT.Player("player", {
         height: "390",
         width: "640",
-        videoId: "Wch3gJG2GJ4",
+        videoId: currentVideoID,
         playerVars: {
           playsinline: 1,
         },
@@ -84,6 +87,8 @@
     function onPlayerStateChange(event) {
       if (event.data == 0) {
         console.log("playing stopped");
+        removeFromPlaylist(currentVideoID);
+        playNext();
       }
       //if (event.data == YT.PlayerState.PLAYING && !done) {
       //  setTimeout(stopVideo, 6000);
@@ -96,7 +101,9 @@
 
     function connectSocket() {
       if (socketSemaphore) {
-        console.log("Another connection attempt already in progress, canceling!");
+        console.log(
+          "Another connection attempt already in progress, canceling!"
+        );
         return;
       }
       console.log("Connecting to socket");
@@ -130,10 +137,7 @@
       socket.onmessage = function (event) {
         data = JSON.parse(event.data);
         if (data["videoId"] != undefined && data["videoId"] != null) {
-          playlist.push(data);
-          updatePlaylist();
-          player.loadVideoById(data["videoId"]);
-          player.playVideo();
+          addToPlaylist(data);
           console.log(`[message] Data received from server: ${event.data}`);
         } else {
           console.log(
@@ -144,14 +148,47 @@
       socketSemaphore = false;
     }
 
-    function updatePlaylist() {
-      pl = document.getElementById("playlist");
-      output = "";
-      playlist.forEach((e) => {
-        output =
-          output + `<div><div>${e.title}</div><div>${e.link}</div></div>`;
+    function removeFromPlaylist(videoId) {
+      tmp = [];
+      playlist.forEach((item) => {
+        if (item.videoId != videoId) {
+          tmp.push(item);
+        } else {
+          console.log(`removing ${videoId}`);
+        }
       });
-      pl.innerHTML = output;
+      playlist = tmp;
+      // remove from DOM
+      rm = document.getElementById(videoId);
+      if (rm != null) {
+        rm.remove();
+      }
+      currentVideoID = null;
+    }
+
+    function playNext() {
+        console.log(playlist)
+        console.log(playlist[0].videoId)
+      if (playlist[0] != null && playlist[0] != "") {
+        player.loadVideoById(playlist[0].videoId);
+        player.playVideo();
+      }
+    }
+
+    function addToPlaylist(data) {
+      if (document.getElementById(data.videoId) == null) {
+        playlist.push(data);
+        pl = document.getElementById(
+          "playlist"
+        ).innerHTML += `<div id="${data.videoId}"><div>${data.title}</div><div><a target="_blank" href="${data.link}">${data.link}</a></div></div>`;
+        if (player.getPlayerState() == YT.PlayerState.ENDED) {
+          player.loadVideoById(data["videoId"]);
+          player.playVideo();
+          currentVideoID = data["videoId"];
+        }
+      } else {
+        console.log(`item ${data.videoId} already exists in playlist skipping`);
+      }
     }
 
     //function myDebugger() {

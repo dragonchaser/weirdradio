@@ -54,6 +54,7 @@ console.log("Websocketserver started");
 let sockets = [];
 webSocketServer.on("connection", function (socket) {
   sockets.push(socket);
+  console.log(`Connection from ${socket.remoteAddress}`);
 
   // When you receive a message, send that message to every socket.
   //socket.on('message', function(msg) {
@@ -62,6 +63,7 @@ webSocketServer.on("connection", function (socket) {
 
   // When a socket closes, or disconnects, remove it from the array.
   socket.on("close", function () {
+    console.log(`Disconnect from ${socket.remoteAddress}`);
     sockets = sockets.filter((s) => s !== socket);
   });
 });
