@@ -39,26 +39,15 @@ def notify(ctx):
             },
         ],
         "depends_on": [ 
-                        "docker-build-motsognir-amd64", 
-                        "docker-build-motsognir-arm64", 
-                        "docker-build-webtest-amd64",
-                        "docker-build-webtest-arm64",                  
-                        "docker-build-unbound-amd64",
-                        "docker-build-unbound-arm64",                  
+                        "docker-build-weirdradio-amd64", 
+                        "docker-build-weirdradio-arm64",                 
 
-                        "docker-publish-motsognir-amd64", 
-                        "docker-publish-motsognir-arm64", 
-                        "docker-publish-webtest-amd64",
-                        "docker-publish-webtest-arm64",                  
-                        "docker-publish-unbound-amd64",
-                        "docker-publish-unbound-arm64",                  
+                        "docker-publish-weirdradio-amd64", 
+                        "docker-publish-weirdradio-arm64", 
 
-                        "docker-publish-weekly-motsognir-amd64", 
-                        "docker-publish-weekly-motsognir-arm64", 
-                        "docker-publish-weekly-webtest-amd64",
-                        "docker-publish-weekly-webtest-arm64",                  
-                        "docker-publish-weekly-unbound-amd64",
-                        "docker-publish-weekly-unbound-arm64",                  
+                        "docker-publish-weekly-weirdradio-amd64", 
+                        "docker-publish-weekly-weirdradio-arm64", 
+               
                       ],
         "trigger": {
             "ref": [
