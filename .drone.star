@@ -2,8 +2,8 @@ def main(ctx):
     return [
         stepPR("amd64", "weirdradio"),
         stepPR("arm64", "weirdradio"),
-        stepMergeMaster("amd64", "weirdradio"),
-        stepMergeMaster("arm64", "weirdradio"),
+        stepMergeMain("amd64", "weirdradio"),
+        stepMergeMain("arm64", "weirdradio"),
         stepBuildWeekly("amd64", "weirdradio"),
         stepBuildWeekly("arm64", "weirdradio"),
 
@@ -51,7 +51,7 @@ def notify(ctx):
                       ],
         "trigger": {
             "ref": [
-                "refs/heads/master",
+                "refs/heads/main",
                 "refs/heads/release*",
                 "refs/tags/**",
                 "refs/pull/**",
@@ -95,7 +95,7 @@ def stepPR(arch, path):
         },
     }
 
-def stepMergeMaster(arch, path):
+def stepMergeMain(arch, path):
     return {
         "kind": "pipeline",
         "type": "docker",
@@ -124,7 +124,7 @@ def stepMergeMaster(arch, path):
         ],
         "trigger": {
             "ref": [
-                "refs/heads/master",
+                "refs/heads/main",
             ],
             "status": [
               "success",
@@ -162,7 +162,7 @@ def stepBuildWeekly(arch, path):
         ],
         "trigger": {
             "ref": [
-                "refs/heads/master",
+                "refs/heads/main",
             ],
             "event": [
               "cron"
