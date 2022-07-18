@@ -1,6 +1,5 @@
 
-[![Build Status](https://drone.services.datenschmutz.space/api/badges/dragonchaser/weirdradio/status.svg)](https://drone.services.datenschmutz.space/dr
-
+[![Build Status](https://drone.services.datenschmutz.space/api/badges/dragonchaser/weirdradio/status.svg)](https://drone.services.datenschmutz.space/dragonchaser/weirdradio)
 # Weirdradio
 
 Weirdradio is a matrix bot that will queue youtube videos into a webfrontend for listening.
