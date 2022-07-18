@@ -15,8 +15,8 @@ MIT see [LICENSE](https://github.com/dragonchaser/matrix-feeder/blob/master/LICE
 ## Run
 
 ```
-docker build . -t local/weirdradio:latest
-docker run -it \
+$> docker build . -t local/weirdradio:latest
+$> docker run -it \
     -p8090:8090 \
     -p8080:8080 \
     -v $(pwd)/config:/weirdradio/config \
