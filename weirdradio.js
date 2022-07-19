@@ -21,9 +21,14 @@ const client = new MatrixClient(
 );
 
 // write javascript for baseurl
+if (config.secure) {
+  urlConfigData = `var baseUrl = "https://${config.domain}";\nvar wsBaseUrl = "wss://${config.webSocketDomain}";\n`;
+} else {
+  urlConfigData = `var baseUrl = "http://${config.domain}";\nvar wsBaseUrl = "ws://${config.webSocketDomain}";\n`;
+}
 fs.writeFileSync(
   config.assetDir + "/baseurl.js",
-  `var baseUrl = "${config.domain}";\nvar wsBaseUrl = "${config.webSocketDomain}";\n`,
+  urlConfigData,
   function (err) {
     if (err) return console.log(err);
   }

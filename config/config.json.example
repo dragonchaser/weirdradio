@@ -3,6 +3,7 @@
   "accessToken": "youraccesstokencanbeobtainedthroughriot",
   "domain": "yourdomain.tld",
   "webSocketDomain": "ws.yourdomain.tld",
+  "secure":true,
   "storage": "config/bot.json",
   "assetDir": "assets/",
   "webServerPort": "8080",

@@ -112,7 +112,7 @@
       }
       console.log("Connecting to socket");
       socketSemaphore = true;
-      let socket = new WebSocket("ws://" + wsBaseUrl);
+      let socket = new WebSocket(wsBaseUrl);
       socket.onopen = function (e) {
         clearInterval(socketConnector);
         socketConnector = null;
