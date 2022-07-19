@@ -91,7 +91,7 @@
     function onPlayerStateChange(event) {
       if (event.data == 0) {
         console.log("playing stopped");
-        removeFromPlaylist(currentVideoID);
+        // it seems like there is a race condition happening here
         playNext();
       }
       //if (event.data == YT.PlayerState.PLAYING && !done) {
@@ -170,6 +170,7 @@
     }
 
     function playNext() {
+      removeFromPlaylist(currentVideoID);
       if (playlist[0] != null && playlist[0] != "") {
         player.loadVideoById(playlist[0].videoId);
         player.playVideo();
