@@ -35,7 +35,7 @@ var files = fs.readdirSync(config.assetDir);
 files.forEach((name) => {
   assets[name] = fs.readFileSync("assets/" + name);
 });
- console.log("[DONE]");
+console.log("[DONE]");
 // create server, this is for delivering the iframe page
 const webServer = http
   .createServer((req, res) => {
@@ -46,11 +46,20 @@ const webServer = http
     if (assets[reqFileName] != undefined && assets[reqFileName] != null) {
       extension = reqFileName.split(".").pop();
       if (extension == "html" || extension == "html") {
-        res.writeHead(200, { "Content-Type": "text/html" });
+        res.writeHead(200, {
+          "Content-Type": "text/html",
+          "Access-Control-Allow-Origin": "https://" + config.webSocketDomain,
+        });
       } else if (extension == "js") {
-        res.writeHead(200, { "Content-Type": "text/javascript" });
+        res.writeHead(200, {
+          "Content-Type": "text/javascript",
+          "Access-Control-Allow-Origin": "https://" + config.webSocketDomain,
+        });
       } else {
-        res.writeHead(200, { "Content-TYpe": "text/plain" });
+        res.writeHead(200, {
+          "Content-TYpe": "text/plain",
+          "Access-Control-Allow-Origin": "https://" + config.webSocketDomain,
+        });
       }
       res.end(assets[reqFileName]);
     } else {
