@@ -90,9 +90,8 @@
     var done = false;
     function onPlayerStateChange(event) {
       if (event.data == 0) {
-        console.log("playing stopped");
-        // it seems like there is a race condition happening here
         playNext();
+        console.log("playing stopped");
       }
       //if (event.data == YT.PlayerState.PLAYING && !done) {
       //  setTimeout(stopVideo, 6000);
