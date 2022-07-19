@@ -115,6 +115,7 @@ client.on("room.message", (roomId, event) => {
           link: link_matches[0],
           videoId: link_matches[1],
           title: title,
+          listeners: sockets.length,
         };
         console.log("Relaying: " + obj.link);
         sockets.forEach((s) => s.send(JSON.stringify(obj)));
