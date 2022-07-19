@@ -20,14 +20,22 @@ const client = new MatrixClient(
   new SimpleFsStorageProvider(config.storage)
 );
 
+// write javascript for baseurl
+fs.writeFileSync(
+  config.assetDir + "/baseurl.js",
+  `var baseUrl = "${config.domain}";\nvar wsBaseUrl = "${config.webSocketDomain}";\n`,
+  function (err) {
+    if (err) return console.log(err);
+  }
+);
 // load assets
-console.log("Reading assets...")
+console.log("Reading assets...");
 let assets = [];
 var files = fs.readdirSync(config.assetDir);
 files.forEach((name) => {
   assets[name] = fs.readFileSync("assets/" + name);
 });
-console.log("[DONE]")
+ console.log("[DONE]");
 // create server, this is for delivering the iframe page
 const webServer = http
   .createServer((req, res) => {
@@ -36,7 +44,14 @@ const webServer = http
       reqFileName = "index.html";
     }
     if (assets[reqFileName] != undefined && assets[reqFileName] != null) {
-      res.writeHead(200, { "Content-Type": "text/html" });
+      extension = reqFileName.split(".").pop();
+      if (extension == "html" || extension == "html") {
+        res.writeHead(200, { "Content-Type": "text/html" });
+      } else if (extension == "js") {
+        res.writeHead(200, { "Content-Type": "text/javascript" });
+      } else {
+        res.writeHead(200, { "Content-TYpe": "text/plain" });
+      }
       res.end(assets[reqFileName]);
     } else {
       res.writeHead(404, { "Content-Type": "text/plain" });
@@ -85,7 +100,7 @@ client.on("room.message", (roomId, event) => {
     //link_matches = body.match(/https?:\/\/[^\ ]*youtu[^\ ]*/g);
     var r = new RegExp(/https?:\/\/[^\ ]*youtube.com\/watch\?v=([^\ ]*)/g);
     link_matches = r.exec(body);
-    if (link_matches && link_matches.length > 1) {
+    if (link_matches && link_matches.length > 1 && link_matches[0] != null) {
       // get title
       request(link_matches[0], function (err, _res, body) {
         if (err) return console.error(err);

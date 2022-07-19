@@ -4,6 +4,10 @@
       type="text/javascript"
       src="http://www.youtube.com/player_api"
     ></script>
+    <script
+      type="text/javascript"
+      src="baseurl.js"
+    ></script>
     <title>Weirdradio</title>
   </head>
   <style>
@@ -108,8 +112,7 @@
       }
       console.log("Connecting to socket");
       socketSemaphore = true;
-      baseUrl = window.location.host.replace("8080", "8090");
-      let socket = new WebSocket("ws://" + baseUrl);
+      let socket = new WebSocket("ws://" + wsBaseUrl);
       socket.onopen = function (e) {
         clearInterval(socketConnector);
         socketConnector = null;
@@ -167,8 +170,6 @@
     }
 
     function playNext() {
-        console.log(playlist)
-        console.log(playlist[0].videoId)
       if (playlist[0] != null && playlist[0] != "") {
         player.loadVideoById(playlist[0].videoId);
         player.playVideo();
@@ -190,12 +191,5 @@
         console.log(`item ${data.videoId} already exists in playlist skipping`);
       }
     }
-
-    //function myDebugger() {
-    //    console.log(socketSemaphore);
-    //    console.log(socketConnector);
-    //    console.log("=================");
-    //}
-    //myDebugger = setInterval(myDebugger, 2000);
   </script>
 </html>

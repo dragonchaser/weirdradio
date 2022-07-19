@@ -1,6 +1,8 @@
 {
   "homeServerUrl": "https://matrix.your-homeserver.org",
   "accessToken": "youraccesstokencanbeobtainedthroughriot",
+  "domain": "yourdomain.tld",
+  "webSocketDomain": "ws.yourdomain.tld",
   "storage": "config/bot.json",
   "assetDir": "assets/",
   "webServerPort": "8080",
