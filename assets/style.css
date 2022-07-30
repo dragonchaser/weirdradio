@@ -1,0 +1,76 @@
+body {
+  padding: 0;
+  margin: 0;
+}
+div.body {
+  position: relative;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+div.body > div.title {
+  padding: 1pc;
+  font-size: 2pc;
+  font-weight: bold;
+  float: left;
+  width: 50%;
+}
+
+div.body > div.listeners {
+    float: right;
+    width: 20%;
+    padding: 2pc 2pc 0 0;
+    font-size: xx-small;
+    text-align: right;
+}
+
+div.playlistframe {
+}
+
+div.playlistframe > div.title {
+  padding: 1pc;
+  font-size: 1.5pc;
+  font-weight: bold;
+}
+
+div.playlist {
+  padding: 0;
+}
+
+div.playlist > div.playlistrow {
+    padding: 1pc;
+    position: relative;
+}
+div.playlist > div.playlistrow:nth-child(even) {
+  background: #fff;
+}
+div.playlist > div.playlistrow:nth-child(odd) {
+  background: #ddd;
+}
+
+div.playlist > div.playlistrow > div.title{
+    font-weight: bold;
+}
+
+div.playlist > div.playlistrow > div.ytlink{
+    font-size: xx-small;
+}
+
+div.playlist > div.playlistrow > div.controls {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+div.playlist > div.playlistrow > div.controls > div.control {
+    float: right;
+    background-color: #aaa;
+    margin: 1pc 0.5pc 0 0;
+}
+
+div.playerframe {
+}
+
+#player {
+  width: 100%;
+}

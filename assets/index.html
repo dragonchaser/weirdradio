@@ -4,192 +4,26 @@
       type="text/javascript"
       src="http://www.youtube.com/player_api"
     ></script>
-    <script
-      type="text/javascript"
-      src="baseurl.js"
-    ></script>
+    <script type="text/javascript" src="baseurl.js"></script>
+    <script type="text/javascript" src="logic.js"></script>
+    <link rel="stylesheet" href="style.css" />
     <title>Weirdradio</title>
   </head>
-  <style>
-    div.body {
-      width: 1024px;
-      height: 768px;
-      border: solid 1px;
-      padding: 1pc;
-    }
-    div.leftcolumn {
-      width: 30%;
-      float: left;
-    }
-    div.title {
-      height: 20%;
-    }
-    div.playlist {
-      height: 80%;
-    }
-    div.rightcolumn {
-      width: 60%;
-      float: left;
-    }
-    #playerframe {
-      height: 100%;
-      width: 100%;
-      background-color: purple;
-    }
-  </style>
   <body onload="connectSocket()">
     <div class="body">
-      <div class="leftcolumn">
+      <div class="title">
+        Weirdradio
+      </div>
+      <div class="listeners">Listeners: <span id="listeners">1</span></div>
+      <div class="playerframe">
+        <div id="player"></div>
+      </div>
+      <div class="playlistframe">
         <div class="title">
-          <h1>Weirdradio</h1>
+          Playlist
         </div>
         <div id="playlist" class="playlist"></div>
       </div>
-      <div class="rightcolumn">
-        <div class="playerframe">
-          <div id="player"></div>
-        </div>
-      </div>
     </div>
   </body>
-  <script>
-    var playlist = [];
-    var socketConnector = null;
-    var socketSemaphore = false;
-    var tag = document.createElement("script");
-    var currentVideoID = null;
-    var player = null;
-
-    tag.src = "https://www.youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName("script")[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-    // 3. This function creates an <iframe> (and YouTube player)
-    //    after the API code downloads.
-    var player;
-    function onYouTubeIframeAPIReady() {
-      currentVideoID = "Wch3gJG2GJ4";
-      player = new YT.Player("player", {
-        height: "390",
-        width: "640",
-        videoId: currentVideoID,
-        playerVars: {
-          playsinline: 1,
-        },
-        events: {
-          onReady: onPlayerReady,
-          onStateChange: onPlayerStateChange,
-        },
-      });
-    }
-
-    function onPlayerReady(event) {
-      event.target.playVideo();
-    }
-
-    var done = false;
-    function onPlayerStateChange(event) {
-      if (event.data == 0) {
-        playNext();
-        console.log("playing stopped");
-      }
-      //if (event.data == YT.PlayerState.PLAYING && !done) {
-      //  setTimeout(stopVideo, 6000);
-      //  done = true;
-      //}
-    }
-    function stopVideo() {
-      player.stopVideo();
-    }
-
-    function connectSocket() {
-      if (socketSemaphore) {
-        console.log(
-          "Another connection attempt already in progress, canceling!"
-        );
-        return;
-      }
-      console.log("Connecting to socket");
-      socketSemaphore = true;
-      let socket = new WebSocket(wsBaseUrl);
-      socket.onopen = function (e) {
-        clearInterval(socketConnector);
-        socketConnector = null;
-        socketSemaphore = false;
-        console.log("[open] Connection established");
-      };
-      // TODO: on close and on error attempt reconnect
-      socket.onclose = function (event) {
-        if (event.wasClean) {
-          console.log(
-            `[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`
-          );
-        } else {
-          // e.g. server process killed or network down
-          // event.code is usually 1006 in this case
-          // TODO: add some nice ui thingi to show reconnect
-          // TODO: also add some timeout function to repeat this until connect is successful, let it interact with 'onopen'
-          console.log("[close] Connection died, attempting reconnect");
-          if (!socketConnector) {
-            socketConnector = setInterval(connectSocket, 5000);
-            socketSemaphore = false;
-          }
-        }
-      };
-      socket.onmessage = function (event) {
-        data = JSON.parse(event.data);
-        if (data["videoId"] != undefined && data["videoId"] != null) {
-          addToPlaylist(data);
-          console.log(`[message] Data received from server: ${event.data}`);
-        } else {
-          console.log(
-            `[unparseable message] Data received from server ${event.data}`
-          );
-        }
-      };
-      socketSemaphore = false;
-    }
-
-    function removeFromPlaylist(videoId) {
-      tmp = [];
-      playlist.forEach((item) => {
-        if (item.videoId != videoId) {
-          tmp.push(item);
-        } else {
-          console.log(`removing ${videoId}`);
-        }
-      });
-      playlist = tmp;
-      // remove from DOM
-      rm = document.getElementById(videoId);
-      if (rm != null) {
-        rm.remove();
-      }
-      currentVideoID = null;
-    }
-
-    function playNext() {
-      removeFromPlaylist(currentVideoID);
-      if (playlist[0] != null && playlist[0] != "") {
-        player.loadVideoById(playlist[0].videoId);
-        player.playVideo();
-      }
-    }
-
-    function addToPlaylist(data) {
-      if (document.getElementById(data.videoId) == null) {
-        playlist.push(data);
-        pl = document.getElementById(
-          "playlist"
-        ).innerHTML += `<div id="${data.videoId}"><div>${data.title}</div><div><a target="_blank" href="${data.link}">${data.link}</a></div></div>`;
-        if (player.getPlayerState() == YT.PlayerState.ENDED) {
-          player.loadVideoById(data["videoId"]);
-          player.playVideo();
-          currentVideoID = data["videoId"];
-        }
-      } else {
-        console.log(`item ${data.videoId} already exists in playlist skipping`);
-      }
-    }
-  </script>
 </html>
