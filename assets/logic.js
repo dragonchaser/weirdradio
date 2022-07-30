@@ -13,7 +13,7 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 //    after the API code downloads.
 var player;
 function onYouTubeIframeAPIReady() {
-  currentVideoID = "Wch3gJG2GJ4";
+  currentVideoID = "tbnLqRW9Ef0";
   player = new YT.Player("player", {
     //height: "390",
     //width: "100%",
@@ -95,19 +95,11 @@ function connectSocket() {
 }
 
 function updateListeners(data) {
-    document.getElementById("listeners").innerHTML = data.listeners;
+  document.getElementById("listeners").innerHTML = data.listeners;
 }
 
 function removeFromPlaylist(videoId) {
-  tmp = [];
-  playlist.forEach((item) => {
-    if (item.videoId != videoId) {
-      tmp.push(item);
-    } else {
-      console.log(`removing ${videoId}`);
-    }
-  });
-  playlist = tmp;
+  delete playlist[currentVideoID];
   // remove from DOM
   rm = document.getElementById(videoId);
   if (rm != null) {
@@ -117,10 +109,7 @@ function removeFromPlaylist(videoId) {
 }
 
 function playNext() {
-  console.log(playlist);
-  delete playlist[currentVideoID];
-  console.log(playlist);
-  //removeFromPlaylist(currentVideoID);
+  removeFromPlaylist(currentVideoID);
   if (playlist[0] != null && playlist[0] != "") {
     player.loadVideoById(playlist[0].videoId);
     player.playVideo();
@@ -138,7 +127,7 @@ function addToPlaylist(data) {
             <a target="_blank" href="${data.link}">${data.link}</a>
         </div>
         <div class="controls">
-            <div class="control">Remove</div>
+            <div class="control" onclick="removeFromPlaylist('${data.videoId}')">Remove</div>
             <div class="control">Play</div>
         </div>
         </div>`;
