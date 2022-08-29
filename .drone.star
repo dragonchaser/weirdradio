@@ -1,10 +1,10 @@
 def main(ctx):
     return [
-        stepPR("amd64", "weirdradio"),
+        #stepPR("amd64", "weirdradio"),
         stepPR("arm64", "weirdradio"),
-        stepMergeMain("amd64", "weirdradio"),
+        #stepMergeMain("amd64", "weirdradio"),
         stepMergeMain("arm64", "weirdradio"),
-        stepBuildWeekly("amd64", "weirdradio"),
+        #stepBuildWeekly("amd64", "weirdradio"),
         stepBuildWeekly("arm64", "weirdradio"),
 
         notify(ctx),
@@ -39,13 +39,13 @@ def notify(ctx):
             },
         ],
         "depends_on": [ 
-                        "docker-build-weirdradio-amd64", 
+                        #"docker-build-weirdradio-amd64", 
                         "docker-build-weirdradio-arm64",                 
 
-                        "docker-publish-weirdradio-amd64", 
+                        #"docker-publish-weirdradio-amd64", 
                         "docker-publish-weirdradio-arm64", 
 
-                        "docker-publish-weekly-weirdradio-amd64", 
+                        #"docker-publish-weekly-weirdradio-amd64", 
                         "docker-publish-weekly-weirdradio-arm64", 
                
                       ],
